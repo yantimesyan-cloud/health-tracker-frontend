@@ -1,0 +1,12 @@
+{
+  "name": "health-tracker-frontend",
+  "version": "1.0.0",
+  "description": "Health Tracker Frontend - Data Rich Dashboard",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'Static site - no build needed'",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

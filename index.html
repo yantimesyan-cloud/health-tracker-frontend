@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>健康追踪 - 数据仪表盘</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="enhanced-features.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span class="logo-icon">💪</span>
+                <span class="logo-text">健康追踪</span>
+            </div>
+            <div class="header-date">
+                <span class="date-text">3月12日</span>
+                <span class="weekday">周二</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container">
+        <!-- Health Score Card -->
+        <div class="card score-card">
+            <div class="score-header">
+                <div class="score-label">
+                    <span class="score-emoji">✨</span>
+                    <span class="score-title">综合健康评分</span>
+                </div>
+                <span class="score-trend">↑ 比昨天 +5</span>
+            </div>
+            <div class="score-content">
+                <canvas id="scoreChart"></canvas>
+                <div class="score-center">
+                    <div class="score-value">85</div>
+                    <div class="score-status">优秀</div>
+                </div>
+            </div>
+            <div class="score-indicators">
+                <div class="indicator">
+                    <span class="indicator-dot" style="background: #7B68EE;"></span>
+                    <span class="indicator-label">运动</span>
+                    <span class="indicator-value">90</span>
+                </div>
+                <div class="indicator">
+                    <span class="indicator-dot" style="background: #4ADE80;"></span>
+                    <span class="indicator-label">营养</span>
+                    <span class="indicator-value">82</span>
+                </div>
+                <div class="indicator">
+                    <span class="indicator-dot" style="background: #FF6B9D;"></span>
+                    <span class="indicator-label">睡眠</span>
+                    <span class="indicator-value">78</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #7B68EE, #9D8FF8);">
+                    <span>🚶</span>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-label">步数</div>
+                    <div class="stat-value">8,234</div>
+                    <div class="stat-meta">
+                        <span class="stat-target">目标 10,000</span>
+                        <span class="stat-percent">82%</span>
+                    </div>
+                </div>
+                <div class="stat-progress">
+                    <div class="progress-bar" style="width: 82%; background: linear-gradient(90deg, #7B68EE, #9D8FF8);"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #FF6B9D, #FF8FB3);">
+                    <span>🔥</span>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-label">热量摄入</div>
+                    <div class="stat-value">1,650</div>
+                    <div class="stat-meta">
+                        <span class="stat-target">建议 2,000</span>
+                        <span class="stat-percent">83%</span>
+                    </div>
+                </div>
+                <div class="stat-progress">
+                    <div class="progress-bar" style="width: 83%; background: linear-gradient(90deg, #FF6B9D, #FF8FB3);"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #4ADE80, #6EE7A0);">
+                    <span>💤</span>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-label">睡眠时长</div>
+                    <div class="stat-value">7.5h</div>
+                    <div class="stat-meta">
+                        <span class="stat-target">目标 8h</span>
+                        <span class="stat-percent">94%</span>
+                    </div>
+                </div>
+                <div class="stat-progress">
+                    <div class="progress-bar" style="width: 94%; background: linear-gradient(90deg, #4ADE80, #6EE7A0);"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #FF9F5A, #FFB47A);">
+                    <span>💪</span>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-label">运动时长</div>
+                    <div class="stat-value">45min</div>
+                    <div class="stat-meta">
+                        <span class="stat-target">目标 60min</span>
+                        <span class="stat-percent">75%</span>
+                    </div>
+                </div>
+                <div class="stat-progress">
+                    <div class="progress-bar" style="width: 75%; background: linear-gradient(90deg, #FF9F5A, #FFB47A);"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Weight Trend Chart -->
+        <div class="card chart-card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="title-emoji" style="background: linear-gradient(135deg, #7B68EE, #9D8FF8);">⚖️</span>
+                    <span class="title-text">体重趋势</span>
+                </div>
+                <div class="chart-tabs">
+                    <button class="chart-tab" data-period="7">7天</button>
+                    <button class="chart-tab active" data-period="30">30天</button>
+                </div>
+            </div>
+            <div class="card-content">
+                <div class="weight-summary">
+                    <div class="weight-current">
+                        <div class="weight-label">当前体重</div>
+                        <div class="weight-number">65.2 <span class="weight-unit">kg</span></div>
+                    </div>
+                    <div class="weight-change">
+                        <div class="change-item positive">
+                            <span class="change-label">本周</span>
+                            <span class="change-value">-0.3kg</span>
+                        </div>
+                        <div class="change-item positive">
+                            <span class="change-label">本月</span>
+                            <span class="change-value">-1.2kg</span>
+                        </div>
+                    </div>
+                </div>
+                <canvas id="weightChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Calories Chart -->
+        <div class="card chart-card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="title-emoji" style="background: linear-gradient(135deg, #FF6B9D, #FF8FB3);">🍎</span>
+                    <span class="title-text">热量摄入 vs 消耗</span>
+                </div>
+            </div>
+            <div class="card-content">
+                <div class="calorie-summary">
+                    <div class="calorie-item">
+                        <div class="calorie-dot" style="background: #FF6B9D;"></div>
+                        <div class="calorie-label">摄入</div>
+                        <div class="calorie-value">1,650</div>
+                    </div>
+                    <div class="calorie-separator">-</div>
+                    <div class="calorie-item">
+                        <div class="calorie-dot" style="background: #7B68EE;"></div>
+                        <div class="calorie-label">消耗</div>
+                        <div class="calorie-value">1,920</div>
+                    </div>
+                    <div class="calorie-separator">=</div>
+                    <div class="calorie-item positive">
+                        <div class="calorie-label">赤字</div>
+                        <div class="calorie-value">-270</div>
+                    </div>
+                </div>
+                <canvas id="calorieChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Food Photo Card -->
+        <div class="card food-card">
+            <div class="card-header">
+                <div class="card-title">
+                    <div class="icon-circle" style="background: linear-gradient(135deg, #FF9F5A, #FFB84D);">
+                        📸
+                    </div>
+                    <h3>今日食物记录</h3>
+                </div>
+            </div>
+            
+            <!-- 拼图预览（放在最上面） -->
+            <div class="collage-preview" id="collagePreview">
+                <canvas id="foodCollage"></canvas>
+                <div class="collage-actions">
+                    <button class="download-btn" id="downloadCollageBtn">💾 下载拼图</button>
+                </div>
+            </div>
+            
+            <!-- 照片预览网格 -->
+            <div class="photo-preview-grid" id="photoPreviewGrid">
+                <div class="empty-state">
+                    <div class="empty-state-icon">🍽️</div>
+                    <div class="empty-state-text">点击下方「添加照片」上传你的美食照片<br>自动生成精美拼图</div>
+                </div>
+            </div>
+            
+            <!-- 添加照片按钮（移到最下面） -->
+            <button class="add-photo-btn-bottom" id="addPhotoBtn">
+                📸 添加照片
+            </button>
+        </div>
+
+        <!-- Exercise Stats -->
+        <div class="card chart-card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="title-emoji" style="background: linear-gradient(135deg, #FF9F5A, #FFB47A);">🏃</span>
+                    <span class="title-text">运动统计</span>
+                </div>
+            </div>
+            <div class="card-content">
+                <div class="exercise-summary">
+                    <div class="exercise-stat">
+                        <div class="exercise-number">45</div>
+                        <div class="exercise-label">今日时长 (分钟)</div>
+                    </div>
+                    <div class="exercise-stat">
+                        <div class="exercise-number">5</div>
+                        <div class="exercise-label">本周次数</div>
+                    </div>
+                    <div class="exercise-stat">
+                        <div class="exercise-number">285</div>
+                        <div class="exercise-label">本周总时长 (分钟)</div>
+                    </div>
+                </div>
+                <canvas id="exerciseChart"></canvas>
+                <div class="exercise-types">
+                    <div class="exercise-type-item">
+                        <span class="type-icon">🏃</span>
+                        <span class="type-name">跑步</span>
+                        <span class="type-time">120min</span>
+                    </div>
+                    <div class="exercise-type-item">
+                        <span class="type-icon">🚴</span>
+                        <span class="type-name">骑行</span>
+                        <span class="type-time">90min</span>
+                    </div>
+                    <div class="exercise-type-item">
+                        <span class="type-icon">🧘</span>
+                        <span class="type-name">瑜伽</span>
+                        <span class="type-time">75min</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sleep Quality -->
+        <div class="card chart-card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="title-emoji" style="background: linear-gradient(135deg, #4ADE80, #6EE7A0);">💤</span>
+                    <span class="title-text">睡眠质量</span>
+                </div>
+            </div>
+            <div class="card-content">
+                <div class="sleep-summary">
+                    <div class="sleep-main">
+                        <div class="sleep-duration">7.5<span class="sleep-unit">小时</span></div>
+                        <div class="sleep-quality">
+                            <span class="quality-label">质量评分</span>
+                            <span class="quality-score">78/100</span>
+                        </div>
+                    </div>
+                    <div class="sleep-phases">
+                        <div class="phase-item">
+                            <div class="phase-bar" style="width: 35%; background: #4ADE80;"></div>
+                            <span class="phase-label">深睡</span>
+                            <span class="phase-value">35%</span>
+                        </div>
+                        <div class="phase-item">
+                            <div class="phase-bar" style="width: 50%; background: #6EE7A0;"></div>
+                            <span class="phase-label">浅睡</span>
+                            <span class="phase-value">50%</span>
+                        </div>
+                        <div class="phase-item">
+                            <div class="phase-bar" style="width: 15%; background: #A0EFC0;"></div>
+                            <span class="phase-label">REM</span>
+                            <span class="phase-value">15%</span>
+                        </div>
+                    </div>
+                </div>
+                <canvas id="sleepChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Mood Tracker -->
+        <div class="card chart-card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="title-emoji" style="background: linear-gradient(135deg, #FFD93D, #FFE46D);">😊</span>
+                    <span class="title-text">心情记录</span>
+                </div>
+            </div>
+            <div class="card-content">
+                <div class="mood-week">
+                    <div class="mood-day">
+                        <div class="mood-emoji great">😄</div>
+                        <div class="mood-date">周一</div>
+                    </div>
+                    <div class="mood-day">
+                        <div class="mood-emoji great">😊</div>
+                        <div class="mood-date">周二</div>
+                    </div>
+                    <div class="mood-day">
+                        <div class="mood-emoji good">🙂</div>
+                        <div class="mood-date">周三</div>
+                    </div>
+                    <div class="mood-day">
+                        <div class="mood-emoji great">😄</div>
+                        <div class="mood-date">周四</div>
+                    </div>
+                    <div class="mood-day">
+                        <div class="mood-emoji good">🙂</div>
+                        <div class="mood-date">周五</div>
+                    </div>
+                    <div class="mood-day">
+                        <div class="mood-emoji great">😍</div>
+                        <div class="mood-date">周六</div>
+                    </div>
+                    <div class="mood-day active">
+                        <div class="mood-emoji great">😊</div>
+                        <div class="mood-date">周日</div>
+                    </div>
+                </div>
+                <div class="mood-stats">
+                    <div class="mood-stat-item">
+                        <span class="mood-stat-emoji">😄</span>
+                        <span class="mood-stat-label">很棒</span>
+                        <span class="mood-stat-count">4天</span>
+                    </div>
+                    <div class="mood-stat-item">
+                        <span class="mood-stat-emoji">🙂</span>
+                        <span class="mood-stat-label">不错</span>
+                        <span class="mood-stat-count">3天</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Habit Tracker -->
+        <div class="card chart-card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="title-emoji" style="background: linear-gradient(135deg, #7B68EE, #9D8FF8);">✅</span>
+                    <span class="title-text">习惯打卡</span>
+                </div>
+            </div>
+            <div class="card-content">
+                <div class="habit-list">
+                    <div class="habit-item">
+                        <div class="habit-info">
+                            <div class="habit-icon" style="background: linear-gradient(135deg, #7B68EE, #9D8FF8);">💧</div>
+                            <div class="habit-details">
+                                <div class="habit-name">喝水 8 杯</div>
+                                <div class="habit-streak">连续 12 天</div>
+                            </div>
+                        </div>
+                        <div class="habit-progress-ring">
+                            <svg width="56" height="56">
+                                <circle cx="28" cy="28" r="24" fill="none" stroke="#F0F0F0" stroke-width="4"/>
+                                <circle cx="28" cy="28" r="24" fill="none" stroke="url(#gradient1)" stroke-width="4" 
+                                        stroke-dasharray="150.8" stroke-dashoffset="30.16" stroke-linecap="round" 
+                                        transform="rotate(-90 28 28)"/>
+                                <defs>
+                                    <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#7B68EE"/>
+                                        <stop offset="100%" style="stop-color:#9D8FF8"/>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                            <div class="habit-percent">80%</div>
+                        </div>
+                    </div>
+
+                    <div class="habit-item">
+                        <div class="habit-info">
+                            <div class="habit-icon" style="background: linear-gradient(135deg, #4ADE80, #6EE7A0);">📚</div>
+                            <div class="habit-details">
+                                <div class="habit-name">阅读 30 分钟</div>
+                                <div class="habit-streak">连续 7 天</div>
+                            </div>
+                        </div>
+                        <div class="habit-progress-ring">
+                            <svg width="56" height="56">
+                                <circle cx="28" cy="28" r="24" fill="none" stroke="#F0F0F0" stroke-width="4"/>
+                                <circle cx="28" cy="28" r="24" fill="none" stroke="url(#gradient2)" stroke-width="4" 
+                                        stroke-dasharray="150.8" stroke-dashoffset="0" stroke-linecap="round" 
+                                        transform="rotate(-90 28 28)"/>
+                                <defs>
+                                    <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#4ADE80"/>
+                                        <stop offset="100%" style="stop-color:#6EE7A0"/>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                            <div class="habit-percent">100%</div>
+                        </div>
+                    </div>
+
+                    <div class="habit-item">
+                        <div class="habit-info">
+                            <div class="habit-icon" style="background: linear-gradient(135deg, #FF9F5A, #FFB47A);">🧘</div>
+                            <div class="habit-details">
+                                <div class="habit-name">冥想 10 分钟</div>
+                                <div class="habit-streak">连续 5 天</div>
+                            </div>
+                        </div>
+                        <div class="habit-progress-ring">
+                            <svg width="56" height="56">
+                                <circle cx="28" cy="28" r="24" fill="none" stroke="#F0F0F0" stroke-width="4"/>
+                                <circle cx="28" cy="28" r="24" fill="none" stroke="url(#gradient3)" stroke-width="4" 
+                                        stroke-dasharray="150.8" stroke-dashoffset="75.4" stroke-linecap="round" 
+                                        transform="rotate(-90 28 28)"/>
+                                <defs>
+                                    <linearGradient id="gradient3" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#FF9F5A"/>
+                                        <stop offset="100%" style="stop-color:#FFB47A"/>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                            <div class="habit-percent">50%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="habit-summary">
+                    <div class="habit-summary-item">
+                        <div class="habit-summary-number">3/3</div>
+                        <div class="habit-summary-label">今日完成</div>
+                    </div>
+                    <div class="habit-summary-item">
+                        <div class="habit-summary-number">21</div>
+                        <div class="habit-summary-label">本月总次</div>
+                    </div>
+                    <div class="habit-summary-item">
+                        <div class="habit-summary-number">87%</div>
+                        <div class="habit-summary-label">完成率</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="config.js"></script>
+    <script src="data-integration.js"></script>
+    <script src="ai-integration.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
