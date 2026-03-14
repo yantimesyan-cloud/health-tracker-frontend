@@ -8,16 +8,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function initializeApp() {
     try {
+        // Get today's date
+        const today = new Date().toISOString().split('T')[0];
+        
         // Test API connection
         console.log('Testing API connection...');
-        const healthData = await API.getHealthSummary();
+        const healthData = await loadHealthData(today);
         console.log('✅ API connected:', healthData);
         
-        // Load initial data
-        await Promise.all([
-            loadRecentMeals(),
-            loadRecentSymptoms()
-        ]);
+        // Update UI with real data
+        if (healthData) {
+            updateHealthUI(healthData);
+        }
         
         // Update date display
         updateDateDisplay();
@@ -27,6 +29,60 @@ async function initializeApp() {
         console.error('❌ Failed to initialize app:', error);
         showErrorNotification('无法连接到服务器，请稍后再试');
     }
+}
+
+async function loadHealthData(date) {
+    const url = `${API_CONFIG.baseURL}${API_CONFIG.endpoints.healthData}?date=${date}`;
+    console.log('Fetching:', url);
+    
+    const response = await fetch(url);
+    if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+    }
+    
+    return await response.json();
+}
+
+function updateHealthUI(data) {
+    // Update score
+    const scoreValue = document.querySelector('.score-value');
+    if (scoreValue) scoreValue.textContent = data.score.overall;
+    
+    // Update indicators
+    const indicators = document.querySelectorAll('.indicator-value');
+    if (indicators[0]) indicators[0].textContent = data.score.exercise;
+    if (indicators[1]) indicators[1].textContent = data.score.nutrition;
+    if (indicators[2]) indicators[2].textContent = data.score.sleep;
+    
+    // Update stats
+    const statValues = document.querySelectorAll('.stat-value');
+    if (statValues[0]) statValues[0].textContent = data.steps.current.toLocaleString();
+    if (statValues[1]) statValues[1].textContent = data.calories.intake.toLocaleString();
+    if (statValues[2]) statValues[2].textContent = data.water.current;
+    
+    // Update progress bars
+    const progressBars = document.querySelectorAll('.progress-bar');
+    if (progressBars[0]) {
+        const stepsPercent = Math.round((data.steps.current / data.steps.target) * 100);
+        progressBars[0].style.width = `${stepsPercent}%`;
+        // Update percentage text
+        const statPercents = document.querySelectorAll('.stat-percent');
+        if (statPercents[0]) statPercents[0].textContent = `${stepsPercent}%`;
+    }
+    if (progressBars[1]) {
+        const caloriesPercent = Math.round((data.calories.intake / data.calories.target) * 100);
+        progressBars[1].style.width = `${caloriesPercent}%`;
+        const statPercents = document.querySelectorAll('.stat-percent');
+        if (statPercents[1]) statPercents[1].textContent = `${caloriesPercent}%`;
+    }
+    if (progressBars[2]) {
+        const waterPercent = Math.round((data.water.current / data.water.target) * 100);
+        progressBars[2].style.width = `${waterPercent}%`;
+        const statPercents = document.querySelectorAll('.stat-percent');
+        if (statPercents[2]) statPercents[2].textContent = `${waterPercent}%`;
+    }
+    
+    console.log('✅ UI updated with real data');
 }
 
 function updateDateDisplay() {

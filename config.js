@@ -1,7 +1,8 @@
 // API Configuration
 const API_CONFIG = {
-    baseURL: 'https://health-tracker-backend-eta.vercel.app',
+    baseURL: 'https://health-tracker-api-five.vercel.app',
     endpoints: {
+        healthData: '/api/health-data',
         meals: '/api/meals',
         mealById: (id) => `/api/meals/${id}`,
         symptoms: '/api/symptoms',
