@@ -472,20 +472,28 @@ function setupPhotoUpload() {
         e.preventDefault();
         e.stopPropagation();
         
+        // 创建 input 并立即触发（必须在同一个事件循环中）
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = 'image/*';
         input.multiple = true;
+        input.style.display = 'none';
+        
+        // 添加到 DOM（某些浏览器需要）
+        document.body.appendChild(input);
         
         input.onchange = async (e) => {
+            console.log('📁 文件选择器触发，选择了文件:', e.target.files.length);
             const files = Array.from(e.target.files);
             
             if (uploadedPhotos.length + files.length > CONFIG.MAX_PHOTOS) {
                 showNotification(`最多只能上传 ${CONFIG.MAX_PHOTOS} 张照片哦！`, 'warning');
+                document.body.removeChild(input);
                 return;
             }
             
             for (const file of files) {
+                console.log('📷 处理文件:', file.name);
                 // 添加照片到预览
                 const reader = new FileReader();
                 reader.onload = async (event) => {
@@ -513,9 +521,21 @@ function setupPhotoUpload() {
                     showAIResult(aiResult);
                 }
             }
+            
+            // 清理 input
+            document.body.removeChild(input);
         };
         
+        // 用户取消选择的情况
+        input.oncancel = () => {
+            console.log('❌ 用户取消了文件选择');
+            document.body.removeChild(input);
+        };
+        
+        // 立即触发点击（必须在同步代码中）
+        console.log('🖱️ 准备触发 input.click()...');
         input.click();
+        console.log('✅ input.click() 已调用');
     });
 }
 

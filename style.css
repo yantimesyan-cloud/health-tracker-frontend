@@ -1025,6 +1025,9 @@ canvas {
     cursor: pointer;
     transition: all 0.3s;
     margin-top: 16px;
+    position: relative;
+    z-index: 10;
+    pointer-events: auto;
 }
 
 .add-photo-btn-bottom:hover {
@@ -1034,6 +1037,7 @@ canvas {
 
 .add-photo-btn-bottom:active {
     transform: translateY(0);
+    background: linear-gradient(135deg, #FF8F4A, #FFA83D);
 }
 
 /* 隐藏原来的"生成拼图"按钮 */

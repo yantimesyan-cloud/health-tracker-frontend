@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>按钮测试</title>
+    <style>
+        body {
+            padding: 40px;
+            font-family: Arial, sans-serif;
+        }
+        .test-btn {
+            width: 300px;
+            padding: 16px;
+            background: linear-gradient(135deg, #FF9F5A, #FFB84D);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            z-index: 100;
+            pointer-events: auto;
+            display: block;
+            margin-bottom: 20px;
+        }
+        .test-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 159, 90, 0.4);
+        }
+        #result {
+            padding: 20px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>按钮交互测试</h1>
+    <button class="test-btn" id="testBtn">📸 点击测试（方法1：标准事件）</button>
+    <button class="test-btn" onclick="directClick()">📸 点击测试（方法2：内联onclick）</button>
+    <div id="result">等待点击...</div>
+    
+    <script>
+        console.log('脚本加载完成');
+        
+        // 方法1：addEventListener
+        const btn = document.getElementById('testBtn');
+        console.log('按钮元素:', btn);
+        
+        if (btn) {
+            btn.addEventListener('click', function(e) {
+                console.log('方法1触发！Event:', e);
+                document.getElementById('result').innerHTML = '✅ 方法1成功！addEventListener 正常工作';
+            });
+            console.log('addEventListener 已绑定');
+        }
+        
+        // 方法2：直接函数
+        function directClick() {
+            console.log('方法2触发！');
+            document.getElementById('result').innerHTML = '✅ 方法2成功！内联 onclick 正常工作';
+        }
+        
+        console.log('所有代码加载完成');
+    </script>
+</body>
+</html>

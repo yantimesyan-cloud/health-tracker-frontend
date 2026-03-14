@@ -313,14 +313,25 @@
     border-radius: 12px;
     font-size: 16px;
     font-weight: 600;
-    cursor: pointer;
+    cursor: pointer !important;
     transition: all 0.2s;
     margin-top: 16px;
+    position: relative;
+    z-index: 100;
+    pointer-events: auto !important;
+    display: block;
+    text-align: center;
+    user-select: none;
 }
 
 .add-photo-btn-bottom:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(255, 159, 90, 0.4);
+    background: linear-gradient(135deg, #FF8F4A, #FFA83D);
+}
+
+.add-photo-btn-bottom:active {
+    transform: scale(0.98);
 }
 
 /* 空状态 */
