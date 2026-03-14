@@ -445,6 +445,8 @@ let uploadedPhotos = [];
 
 function setupPhotoUpload() {
     console.log('🔧 设置照片上传...');
+    
+    // 确保在 DOM 完全加载后再查找元素
     const addPhotoBtn = document.getElementById('addPhotoBtn');
     const photoPreviewGrid = document.getElementById('photoPreviewGrid');
     const collagePreview = document.getElementById('collagePreview');
@@ -456,12 +458,20 @@ function setupPhotoUpload() {
     console.log('Canvas:', foodCollageCanvas);
     
     if (!addPhotoBtn) {
-        console.error('❌ 找不到添加照片按钮！');
+        console.error('❌ 找不到添加照片按钮！#addPhotoBtn 不存在');
+        // 尝试诊断：列出所有按钮
+        const allButtons = document.querySelectorAll('button');
+        console.log('页面中的所有按钮:', Array.from(allButtons).map(b => ({ id: b.id, class: b.className, text: b.textContent.substring(0, 20) })));
         return;
     }
     
-    addPhotoBtn.addEventListener('click', () => {
-        console.log('📸 添加照片按钮被点击了！');
+    console.log('✅ 找到按钮，绑定点击事件...');
+    
+    addPhotoBtn.addEventListener('click', (e) => {
+        console.log('📸 添加照片按钮被点击了！Event:', e);
+        e.preventDefault();
+        e.stopPropagation();
+        
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = 'image/*';
