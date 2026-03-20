@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>照片上传测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 20px;
+            padding: 60px 20px;
+            text-align: center;
+            background: #f8f9ff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+        }
+        
+        .upload-area:hover {
+            border-color: #764ba2;
+            background: #f0f2ff;
+            transform: scale(1.02);
+        }
+        
+        .upload-area.dragover {
+            border-color: #4CAF50;
+            background: #e8f5e9;
+        }
+        
+        .upload-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        
+        .upload-text {
+            font-size: 18px;
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .upload-hint {
+            font-size: 14px;
+            color: #999;
+        }
+        
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .photo-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #f0f0f0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .photo-item .remove-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(255,255,255,0.95);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: all 0.2s;
+        }
+        
+        .photo-item .remove-btn:hover {
+            background: #ff4444;
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .collage-preview {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 20px;
+            display: none;
+        }
+        
+        .collage-preview.active {
+            display: block;
+        }
+        
+        .collage-title {
+            text-align: center;
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .collage-canvas {
+            width: 100%;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            margin-bottom: 15px;
+        }
+        
+        .download-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102,126,234,0.4);
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 16px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        /* 隐藏文件输入 */
+        input[type="file"] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📸 美食拼图生成器</h1>
+        <p class="subtitle">上传你的美食照片，自动生成精美拼图</p>
+        
+        <div class="upload-area" id="uploadArea">
+            <div class="upload-icon">🍽️</div>
+            <div class="upload-text">点击或拖拽上传照片</div>
+            <div class="upload-hint">支持 JPG、PNG 格式，最多 9 张</div>
+        </div>
+        
+        <input type="file" id="fileInput" accept="image/*" multiple>
+        
+        <div class="photo-grid" id="photoGrid"></div>
+        
+        <div class="collage-preview" id="collagePreview">
+            <div class="collage-title">✨ 你的美食拼图</div>
+            <canvas id="collageCanvas" class="collage-canvas"></canvas>
+            <button class="download-btn" id="downloadBtn">💾 下载拼图</button>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="photoCount">0</div>
+                <div class="stat-label">已上传</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">9</div>
+                <div class="stat-label">最大数量</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const MAX_PHOTOS = 9;
+        let uploadedPhotos = [];
+        
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const photoGrid = document.getElementById('photoGrid');
+        const collagePreview = document.getElementById('collagePreview');
+        const collageCanvas = document.getElementById('collageCanvas');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const photoCount = document.getElementById('photoCount');
+        
+        // 点击上传区域触发文件选择
+        uploadArea.addEventListener('click', () => {
+            console.log('📸 Upload area clicked!');
+            fileInput.click();
+        });
+        
+        // 文件选择处理
+        fileInput.addEventListener('change', (e) => {
+            console.log('📁 Files selected:', e.target.files.length);
+            handleFiles(e.target.files);
+        });
+        
+        // 拖拽上传
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            console.log('📦 Files dropped:', e.dataTransfer.files.length);
+            handleFiles(e.dataTransfer.files);
+        });
+        
+        // 处理文件
+        function handleFiles(files) {
+            const fileArray = Array.from(files);
+            
+            if (uploadedPhotos.length + fileArray.length > MAX_PHOTOS) {
+                alert(`最多只能上传 ${MAX_PHOTOS} 张照片哦！`);
+                return;
+            }
+            
+            fileArray.forEach(file => {
+                if (!file.type.startsWith('image/')) {
+                    console.warn('⚠️ Not an image:', file.name);
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    uploadedPhotos.push({
+                        data: e.target.result,
+                        name: file.name,
+                        timestamp: Date.now()
+                    });
+                    
+                    renderPhotoGrid();
+                    generateCollage();
+                    updateStats();
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        // 渲染照片网格
+        function renderPhotoGrid() {
+            photoGrid.innerHTML = '';
+            
+            uploadedPhotos.forEach((photo, index) => {
+                const item = document.createElement('div');
+                item.className = 'photo-item';
+                
+                const img = document.createElement('img');
+                img.src = photo.data;
+                img.alt = photo.name;
+                
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-btn';
+                removeBtn.textContent = '×';
+                removeBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    uploadedPhotos.splice(index, 1);
+                    renderPhotoGrid();
+                    generateCollage();
+                    updateStats();
+                };
+                
+                item.appendChild(img);
+                item.appendChild(removeBtn);
+                photoGrid.appendChild(item);
+            });
+        }
+        
+        // 生成拼图
+        function generateCollage() {
+            if (uploadedPhotos.length === 0) {
+                collagePreview.classList.remove('active');
+                return;
+            }
+            
+            collagePreview.classList.add('active');
+            
+            const count = uploadedPhotos.length;
+            let cols, rows;
+            
+            if (count === 1) { cols = 1; rows = 1; }
+            else if (count === 2) { cols = 2; rows = 1; }
+            else if (count <= 4) { cols = 2; rows = 2; }
+            else if (count <= 6) { cols = 3; rows = 2; }
+            else { cols = 3; rows = 3; }
+            
+            const cellSize = 300;
+            const gap = 10;
+            
+            collageCanvas.width = cols * cellSize + (cols - 1) * gap;
+            collageCanvas.height = rows * cellSize + (rows - 1) * gap;
+            
+            const ctx = collageCanvas.getContext('2d');
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, collageCanvas.width, collageCanvas.height);
+            
+            let loadedCount = 0;
+            uploadedPhotos.forEach((photo, index) => {
+                const img = new Image();
+                img.onload = () => {
+                    const col = index % cols;
+                    const row = Math.floor(index / cols);
+                    const x = col * (cellSize + gap);
+                    const y = row * (cellSize + gap);
+                    
+                    // 计算裁剪参数以填充正方形
+                    const scale = Math.max(cellSize / img.width, cellSize / img.height);
+                    const scaledWidth = img.width * scale;
+                    const scaledHeight = img.height * scale;
+                    const offsetX = (cellSize - scaledWidth) / 2;
+                    const offsetY = (cellSize - scaledHeight) / 2;
+                    
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.roundRect(x, y, cellSize, cellSize, 20);
+                    ctx.clip();
+                    ctx.drawImage(img, x + offsetX, y + offsetY, scaledWidth, scaledHeight);
+                    ctx.restore();
+                    
+                    loadedCount++;
+                    if (loadedCount === uploadedPhotos.length) {
+                        console.log('✅ Collage generated!');
+                    }
+                };
+                img.src = photo.data;
+            });
+        }
+        
+        // 下载拼图
+        downloadBtn.addEventListener('click', () => {
+            const link = document.createElement('a');
+            const timestamp = new Date().toISOString().split('T')[0];
+            link.download = `美食拼图_${timestamp}.png`;
+            link.href = collageCanvas.toDataURL('image/png');
+            link.click();
+            console.log('💾 Collage downloaded!');
+        });
+        
+        // 更新统计
+        function updateStats() {
+            photoCount.textContent = uploadedPhotos.length;
+        }
+        
+        console.log('✅ 照片上传系统初始化完成！');
+    </script>
+</body>
+</html>
