@@ -1,7 +1,9 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
+  "buildCommand": "echo 'Static site ready'",
+  "outputDirectory": ".",
   "installCommand": "npm install",
   "framework": null,
-  "devCommand": "npm run dev"
+  "devCommand": "npm run dev",
+  "cleanUrls": true,
+  "trailingSlash": false
 }
